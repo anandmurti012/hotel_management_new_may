@@ -1,0 +1,170 @@
+<%- include('../partials/header') %>
+  <!-- < %- include('../partials/adminNavbar') %> -->
+  <nav class="navbar navbar-expand-lg navbar-dark"
+   style="box-shadow: 0px 5px 8px 2px rgba(72, 63, 94, 0.247); background-color: rgb(53, 48, 78)">
+   <div class="container-fluid">
+     <img style="margin-left: 5px; height: 50px; width: 100px; display: inline-block;"
+       src="https://e7.pngegg.com/pngimages/1011/581/png-clipart-w-hotel-logo-illustration-w-hotels-w-barcelona-starwood-marriott-international-hotel-logo-angle-text.png">
+     <a class="navbar-brand" href="/hotelIndex"><span style=" margin-left: 15px; color: white;">Hotels</span></a>
+     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+       <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         <li class="nav-item">
+           <a class="nav-link active" aria-current="page" href="#"> </a>
+         </li>
+         <li class="nav-item">
+           <a class="nav-link" href="#"> </a>
+         </li>
+       </ul>
+       <div>
+         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+           <li class="nav-item">
+             <a id="admin-logout-btn" style="cursor: pointer;" class="nav-link text-white" aria-current="page">Logout</a>
+           </li>
+           <li class="nav-item">
+             <!-- <a type="button" class="btn nav-link text-white" data-bs-toggle="modal"
+           data-bs-target="#exampleModal">Login</a> -->
+             <a id="admin-login-link" type="button" class="btn nav-link text-white" data-bs-target="#exampleModalToggle"
+               data-bs-toggle="modal"><span style="margin-right: 15px;">Login</span></a>
+             <a style="text-decoration: none;" href="#">
+               <h5 style="color: rgb(221, 214, 214); margin-left: 15px; margin-top: 7px;" id="logged-in-status-admin"></h5>
+             </a>
+           </li>
+           <img style="height:50px; width: 50px; margin-left: 10px;"
+             src="https://fc01.deviantart.net/fs71/f/2012/029/f/1/user_icom_by_adeptusmagos-d4o017u.png">
+         </ul>
+       </div>
+     </div>
+   </div>
+ </nav>
+     
+
+    <div class="container mt-2" >
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-lg-12 d-flex justify-content-between">
+            <div class="col-lg-6">
+              <strong><h1 style="color: rgb(9, 72, 167); text-shadow: 0px 0px 8px rgba(130, 167, 236, 0.5);"><%= mHotelView.name %></h1></strong>
+              <img style="height: 300px; width: 450px; border-radius: 5px; box-shadow: 0px 0px 3px 2px rgb(119, 248, 231);" src="<%= mHotelView.image  %>">
+            </div>
+            <div class="col-lg-6" style="margin-top: 133px;">
+              <strong><p style="border: 1px dotted rgb(37, 229, 243);" ><%= mHotelView.address.fullAddress %></p></strong>
+              <strong><p style="border: 1px dotted rgb(37, 229, 243);"><%= mHotelView.address.state %></p></strong>
+              <strong><p style="border: 1px dotted rgb(37, 229, 243);"><%= mHotelView.address.city %></p></strong>
+            </div>
+            <hr>
+          </div>
+          <div class="col-lg-12">
+            
+            <table class="table table-striped table-hover mt-4" border="1" style="border-collapse: collapse; width: 100%;">
+              <thead>
+                  <tr style="text-align: center; background-color: #0756a5; color: #ffffff;">
+                      <th style="padding: 10px;">Room Type</th>
+                      <th style="padding: 10px;">Person Count</th>
+                      <th style="padding: 10px;">Price</th>
+                      <th style="padding: 10px;">Room nos.</th>
+                      <th style="padding: 10px;">Image</th>
+                      <th style="padding: 10px;">Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <% for(let myRoom of mRoomType){ %>
+                  <% let hotelRoom=mHotelRoom ? mHotelRoom.rooms.find(hRoom=> hRoom.roomId === myRoom.roomId) : null;%>
+                  <% console.log("fetched collection of HotelRooms on the behalf of HotelId matched ", hotelRoom) %>
+                  <% console.log("room roomId", myRoom.roomId) %>
+                  <tr style="text-align: center;">
+                      <td style="padding: 10px;"><%= myRoom.roomName %></td>
+                      <td style="padding: 10px;"><%= myRoom.personCount %></td>
+                      <td style="padding: 10px;"><input type="text" style="width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box;" id="price_<%=myRoom.roomId %>" name="price" value="<%= hotelRoom ? hotelRoom.price : ''%>" onchange="handleInputChange(this)"></td>
+                      <td style="padding: 10px;"><input type="number" style="width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box;" id="roomNumbers_<%=myRoom.roomId %>" name="roomNumbers" value="<%= hotelRoom ? hotelRoom.roomNumbers : '' %>" onchange="handleInputChange(this)"></td>
+                      <td style="padding: 10px;"><input type="text" style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box;" id="image_<%= myRoom.roomId %>" name="image" value="<%= hotelRoom ? hotelRoom.image : '' %>" onchange="handleInputChange(this)"></td>
+                      <td style="padding: 10px;"><button type="submit" class="btn btn-primary" style="padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; background-color: #007bff; color: #ffffff;" onclick="saveHotelRoom('<%= myRoom.roomId %>'); clearInputFields('<%=myRoom.roomId%>')">Save</button></td>
+                  </tr>
+                  <% } %>
+              </tbody>
+          </table>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <script>
+      function handleInputChange(input) {
+
+      };
+
+      function clearInputFields(roomId) {
+        document.getElementById(`price_${roomId}`).value = "";
+        document.getElementById(`roomNumbers_${roomId}`).value = "";
+        document.getElementById(`image_${roomId}`).value = "";
+      };
+
+      function saveHotelRoom(pRoomId) {
+        console.log("roomId ->", pRoomId);
+        const priceInput = document.getElementById(`price_${pRoomId}`).value;
+        const roomNumberInput = document.getElementById(`roomNumbers_${pRoomId}`).value;
+        const imageInput = document.getElementById(`image_${pRoomId}`).value.split(',').map(url => url.trim());
+        console.log(pRoomId, priceInput, roomNumberInput, imageInput);
+        fetch('/saveRoom', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            roomId: pRoomId,
+            price: priceInput,
+            roomNumbers: roomNumberInput,
+            image: imageInput
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Response from server:', data);
+          })
+          .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+          });
+      }
+    </script>
+  <script>
+    document.getElementById('admin-logout-btn').addEventListener('click', ()=>{
+      fetch('/adminLogout', {method:'GET'})
+      .then(response => {
+        if(response.redirected){
+          window.location.href = response.url;
+        }
+      })
+      .catch(error => console.error('Error logging:', error));
+    });
+    
+      function updateAdminLoginStatus() {
+        fetch('/check-admin-login-status')
+          .then(response => response.json())
+          .then(data => {
+            if (data.adminLoggedIn) {
+              document.getElementById('logged-in-status-admin').innerText = `${data.adminName}`;
+              document.getElementById('admin-logout-btn').style.display = 'block';
+              document.getElementById('admin-login-link').style.display = 'none';
+            } else {
+              document.getElementById('logged-in-status-admin').innerText = '';
+              document.getElementById('admin-login-link').style.display = 'block';
+               document.getElementById('admin-logout-btn').style.display = 'none';
+            }
+          })
+          .catch(error => console.error('Error checking login status', error));
+      }
+      updateAdminLoginStatus();
+    </script>
+
+    <%- include('../partials/footer') %>
