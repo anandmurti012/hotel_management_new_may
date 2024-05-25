@@ -49,10 +49,25 @@ router.get('/adminLogin', async (req, res) => {
 });
 
 //==============Login system -Users================
+ 
 router.post('/userRegister', async (req, res) => {
-  const userData = new Users(req.body.users);  
-  await userData.save();
-  res.send('user successfully registered')
+  try {
+    const userId = req.body.users.userId; // Extract userId from the request body
+    const validateUsers = await Users.findOne({ userId: userId });
+    console.log("validateUsers:::::::::", validateUsers);
+    
+    if (validateUsers !== null) {
+      res.send("User already registered, Please login your Account");
+    } else {
+      const userData = new Users(req.body.users); 
+      await userData.save();
+      console.log("User successfully registered");
+      res.send("User successfully registered");  
+    }
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    res.status(500).send("Internal Server Error"); 
+  }
 });
 
 var globalUserId;
